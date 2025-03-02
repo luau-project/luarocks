@@ -19,6 +19,7 @@ ARGUMENTS
    noreset                Don't reset environment after each test
    clean                  Remove existing testing environment.
    ci                     Add if running on Unix CI.
+   ci-windows             Add if running on Windows CI.
    appveyor               Add if running on Appveyor.
    os=<type>              Set OS ("linux", "osx", or "windows").
    lua_dir=<path>         Path of Lua installation (default "/usr/local")
@@ -351,6 +352,8 @@ function test_env.set_args()
          test_env.VERBOSE = true
       elseif argument == "ci" then
          test_env.CI = true
+      elseif argument == "ci-windows" then
+         test_env.CI_WINDOWS = true
       elseif argument == "appveyor" then
          test_env.APPVEYOR = true
       elseif argument:find("^os=") then
