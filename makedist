@@ -63,6 +63,7 @@ then
    sed -i 's/program_version = "[^"]*"/program_version = "'$version'"/' src/luarocks/core/cfg.lua
    sed -i 's/version: [0-9.]*/version: '$version'./' appveyor.yml
    sed -i 's/LUAROCKS_VER: [0-9.]*/LUAROCKS_VER: '$version'/' appveyor.yml
+   sed -i 's/LUAROCKS_VER: [0-9.]*/LUAROCKS_VER: '$version'/' .github/workflows/windows-test.yml
    sed -i 's/vars.VERSION = "[0-9.]*"/vars.VERSION = "'$xyversion'"/' install.bat
    echo "==============================================================================="
    git diff
