@@ -2,18 +2,16 @@ name: Windows test
 
 on:
   push:
-    branches: master
-  pull_request:
-    branches: '*'
-  workflow_dispatch:
-    branches: '*'
+  #   branches: master
+  # pull_request:
+  #   branches: '*'
+  # workflow_dispatch:
+  #   branches: '*'
 
 env:
-  LUAROCKS_VER: 3.0.0
   LUAROCKS_DEPS_DIR: c:\external
-  LUAROCKS_DEPS_OPENSSL_VER: "1.1.1"
+  LUAROCKS_DEPS_OPENSSL_VER: "3.4.1"
   LUAROCKS_DEPS_ZLIB_VER: "1.3.1"
-  LUAROCKS_DEPS_BZIP2_VER: "1.0.8"
   LUAROCKS_WINDOWS_GH_CI: "ci-windows"
 
 jobs:
@@ -24,54 +22,119 @@ jobs:
       run:
         shell: cmd
     strategy:
+      fail-fast: false
       matrix:
         include:
+          # x86
+          
           # quick tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,unit"
-            TESTTYPE: ""
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "integration,unit"
+          #   TESTTYPE: ""
+          #   ARCH: x86
           # Lua 5.4 tests
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "integration,quick"
+          #   TESTTYPE: "unit"
+          #   ARCH: x86
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   ARCH: x86
           - LUAV: "5.4"
             LUAT: "lua"
             COMPILER: "mingw"
             FILES: "spec//build_spec.lua"
             EXCLUDE: ""
             TESTTYPE: ""
+            ARCH: x86
           # LuaJIT 2.1 tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "integration,quick"
+          #   TESTTYPE: "unit"
+          #   ARCH: x86
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   ARCH: x86
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "mingw"
+          #   FILES: "spec//build_spec.lua"
+          #   EXCLUDE: ""
+          #   TESTTYPE: ""
+          #   ARCH: x86
+
+
+          # x64
+          
+          # # quick tests
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "integration,unit"
+          #   TESTTYPE: ""
+          #   ARCH: x64
+          # # Lua 5.4 tests
+          - LUAV: "5.4"
+            LUAT: "lua"
             COMPILER: "vs"
             FILES: ""
             EXCLUDE: "integration,quick"
             TESTTYPE: "unit"
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
-
+            ARCH: x64
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   ARCH: x64
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "vs"
+          #   FILES: "spec//build_spec.lua"
+          #   EXCLUDE: ""
+          #   TESTTYPE: ""
+          #   ARCH: x64
+          # # LuaJIT 2.1 tests
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "integration,quick"
+          #   TESTTYPE: "unit"
+          #   ARCH: x64
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   ARCH: x64
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: "spec//build_spec.lua"
+          #   EXCLUDE: ""
+          #   TESTTYPE: ""
+          #   ARCH: x64
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,20 +143,22 @@ jobs:
         if: ${{ matrix.COMPILER == 'vs' }}
         uses: ilammy/msvc-dev-cmd@v1
         with:
-          toolset: 14.0
-          arch: x86
-      
+          arch: ${{ matrix.ARCH }}
+
+      - name: Add bin directory of dependencies to system PATH environment variable
+        if: ${{ matrix.COMPILER == 'vs' }}
+        run: echo ${{ env.LUAROCKS_DEPS_DIR }}\bin>>${{ github.path }}
+                  
       - name: Cache zlib tarball
+        if: ${{ matrix.COMPILER == 'vs' }}
         id: cache-zlib-tarball
         uses: actions/cache@v4
         with:
           path: zlib-${{ env.LUAROCKS_DEPS_ZLIB_VER }}.tar.gz
           key: zlib-${{ env.LUAROCKS_DEPS_ZLIB_VER }}
 
-      - name: Add bin directory of dependencies to system PATH environment variable
-        run: echo "${{ env.LUAROCKS_DEPS_DIR }}\bin">>${{ github.path }}
-          
       - name: Install dependency (zlib)
+        if: ${{ matrix.COMPILER == 'vs' }}
         run: |
           cd "${{ runner.temp }}" && mkdir zlib && cd zlib;
 
@@ -119,105 +184,20 @@ jobs:
             "-DBUILD_STATIC_LIBS=OFF" ^
             "--install-prefix" "${{ env.LUAROCKS_DEPS_DIR }}" ^
             "-S" "zlib-${{ env.LUAROCKS_DEPS_ZLIB_VER }}" ^
-            "-B" "_build" && ^
-          cmake "--build" "_build" "--config" "Release" && ^
-          cmake "--install" "_build" "--config" "Release"
+            "-B" "_build-zlib" && ^
+          cmake "--build" "_build-zlib" "--config" "Release" && ^
+          cmake "--install" "_build-zlib" "--config" "Release"
 
           IF "${{ matrix.COMPILER }}"=="vs" (
             copy "${{ env.LUAROCKS_DEPS_DIR }}\lib\zlib.lib" ^
               "${{ env.LUAROCKS_DEPS_DIR }}\lib\z.lib"
-            
-            copy "${{ env.LUAROCKS_DEPS_DIR }}\bin\zlib1.dll" ^
-              "${{ env.LUAROCKS_DEPS_DIR }}\lib\z.dll"
           )
-
-      - name: Cache libbz2 tarball
-        id: cache-libbz2-tarball
-        uses: actions/cache@v4
-        with:
-          path: bzip2-${{ env.LUAROCKS_DEPS_BZIP2_VER }}.tar.gz
-          key: bzip2-${{ env.LUAROCKS_DEPS_BZIP2_VER }}
-        
+      
       - name: Install dependency (libbz2)
+        if: ${{ matrix.COMPILER == 'vs' }}
         run: |
-          cd "${{ runner.temp }}" && mkdir bzip2 && cd bzip2
-
-          IF NOT "${{ steps.cache-libbz2-tarball.outputs.cache-hit }}"=="true" (
-            curl "-o" "${{ github.workspace }}\bzip2-${{ env.LUAROCKS_DEPS_BZIP2_VER }}.tar.gz" ^
-              "https://sourceware.org/pub/bzip2/bzip2-${{ env.LUAROCKS_DEPS_BZIP2_VER }}.tar.gz"
-          )
-          
-          tar -xf "${{ github.workspace }}\bzip2-${{ env.LUAROCKS_DEPS_BZIP2_VER }}.tar.gz" && ^
-          cd "bzip2-${{ env.LUAROCKS_DEPS_BZIP2_VER }}"
-          
-          IF EXIST CMakeLists.txt ( del CMakeLists.txt )
-
-          echo cmake_minimum_required(VERSION 3.15)>>CMakeLists.txt
-          echo project(bzip2>>CMakeLists.txt
-          echo     VERSION ${{ env.LUAROCKS_DEPS_BZIP2_VER }}>>CMakeLists.txt
-          echo     LANGUAGES C)>>CMakeLists.txt
-          echo set(CMAKE_BUILD_TYPE "Release">>CMakeLists.txt
-          echo     CACHE STRING "Build type")>>CMakeLists.txt
-          echo set(bzip2_lib_header>>CMakeLists.txt
-          echo     bzlib.h)>>CMakeLists.txt
-          echo set(bzip2_lib_sources>>CMakeLists.txt
-          echo     blocksort.c>>CMakeLists.txt
-          echo     huffman.c>>CMakeLists.txt
-          echo     crctable.c>>CMakeLists.txt
-          echo     randtable.c>>CMakeLists.txt
-          echo     compress.c>>CMakeLists.txt
-          echo     decompress.c>>CMakeLists.txt
-          echo     bzlib.c)>>CMakeLists.txt
-          echo set(bzip2_lib_definitions "_FILE_OFFSET_BITS=64")>>CMakeLists.txt
-          echo if (WIN32)>>CMakeLists.txt
-          echo     list(APPEND bzip2_lib_definitions "WIN32")>>CMakeLists.txt
-          echo endif()>>CMakeLists.txt
-          echo set(bzip2_targets_to_install "")>>CMakeLists.txt
-          echo option(BUILD_SHARED_LIBS "Build SHARED library" ON)>>CMakeLists.txt
-          echo option(BUILD_STATIC_LIBS "Build STATIC library" OFF)>>CMakeLists.txt
-          echo if (NOT (BUILD_SHARED_LIBS OR BUILD_STATIC_LIBS))>>CMakeLists.txt
-          echo     message(FATAL_ERROR "At least a shared or static library must be built.")>>CMakeLists.txt
-          echo endif()>>CMakeLists.txt
-          echo include(GNUInstallDirs)>>CMakeLists.txt
-          echo if (BUILD_SHARED_LIBS)>>CMakeLists.txt
-          echo     add_library(bzip2_SHARED SHARED)>>CMakeLists.txt
-          echo     target_compile_definitions(bzip2_SHARED PRIVATE ${bzip2_lib_definitions})>>CMakeLists.txt
-          echo     target_sources(bzip2_SHARED PRIVATE ${bzip2_lib_sources})>>CMakeLists.txt
-          echo     if (WIN32)>>CMakeLists.txt
-          echo         if (MSVC OR "${CMAKE_C_SIMULATE_ID}" STREQUAL "MSVC")>>CMakeLists.txt
-          echo             set(bz2_msvc_def "${CMAKE_CURRENT_BINARY_DIR}/bz2.def")>>CMakeLists.txt
-          echo             file(READ "libbz2.def" __libbz2_def_content)>>CMakeLists.txt
-          echo             string(REPLACE "LIBBZ2" "bz2" __bz2_replaced>>CMakeLists.txt
-          echo                 "${__libbz2_def_content}")>>CMakeLists.txt
-          echo             file(WRITE ${bz2_msvc_def} "${__bz2_replaced}")>>CMakeLists.txt
-          echo             target_sources(bzip2_SHARED PRIVATE ${bz2_msvc_def})>>CMakeLists.txt
-          echo         else()>>CMakeLists.txt
-          echo             target_sources(bzip2_SHARED PRIVATE "libbz2.def")>>CMakeLists.txt
-          echo         endif()>>CMakeLists.txt
-          echo     endif()>>CMakeLists.txt
-          echo     set_target_properties(bzip2_SHARED>>CMakeLists.txt
-          echo         PROPERTIES>>CMakeLists.txt
-          echo         POSITION_INDEPENDENT_CODE ON>>CMakeLists.txt
-          echo         OUTPUT_NAME "bz2")>>CMakeLists.txt
-          echo     list(APPEND bzip2_targets_to_install "bzip2_SHARED")>>CMakeLists.txt
-          echo endif()>>CMakeLists.txt
-          echo if (BUILD_STATIC_LIBS)>>CMakeLists.txt
-          echo     add_library(bzip2_STATIC STATIC)>>CMakeLists.txt
-          echo     target_compile_definitions(bzip2_STATIC PRIVATE ${bzip2_lib_definitions})>>CMakeLists.txt
-          echo     target_sources(bzip2_STATIC PRIVATE ${bzip2_lib_sources})>>CMakeLists.txt
-          echo     set_target_properties(bzip2_STATIC>>CMakeLists.txt
-          echo         PROPERTIES>>CMakeLists.txt
-          echo         OUTPUT_NAME "bz2-static")>>CMakeLists.txt
-          echo     list(APPEND bzip2_targets_to_install "bzip2_STATIC")>>CMakeLists.txt
-          echo endif()>>CMakeLists.txt
-          echo install(FILES ${bzip2_lib_header}>>CMakeLists.txt
-          echo     DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}")>>CMakeLists.txt
-          echo install(TARGETS ${bzip2_targets_to_install}>>CMakeLists.txt
-          echo     RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}">>CMakeLists.txt
-          echo     LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}">>CMakeLists.txt
-          echo     ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}")>>CMakeLists.txt
-
-          cd ..
+          cd "${{ runner.temp }}" && ^
+          git clone https://gitlab.com/bzip2/bzip2
           
           IF "${{ matrix.COMPILER }}"=="vs" (
             SET CMAKE_GENERATOR=NMake Makefiles
@@ -230,26 +210,33 @@ jobs:
           cmake "-G" "%CMAKE_GENERATOR%" ^
             "-DCMAKE_C_COMPILER=%CC%" ^
             "-DCMAKE_BUILD_TYPE=Release" ^
-            "-DBUILD_SHARED_LIBS=ON" ^
-            "-DBUILD_STATIC_LIBS=OFF" ^
+            "-DENABLE_SHARED_LIB=ON" ^
+            "-DENABLE_LIB_ONLY=ON" ^
             "--install-prefix" "${{ env.LUAROCKS_DEPS_DIR }}" ^
-            "-S" "bzip2-${{ env.LUAROCKS_DEPS_BZIP2_VER }}" ^
-            "-B" "_build" && ^
-          cmake "--build" "_build" "--config" "Release" && ^
-          cmake "--install" "_build" "--config" "Release"
+            "-S" "bzip2" ^
+            "-B" "_build-bz2" && ^
+          cmake "--build" "_build-bz2" "--config" "Release" && ^
+          cmake "--install" "_build-bz2" "--config" "Release"
+
+          IF EXIST "${{ env.LUAROCKS_DEPS_DIR }}\lib\bz2.dll" (
+            COPY /Y "${{ env.LUAROCKS_DEPS_DIR }}\lib\bz2.dll" ^
+              "${{ env.LUAROCKS_DEPS_DIR }}\bin"
+          )
       
       - name: Cache OpenSSL installer
+        if: ${{ matrix.COMPILER == 'vs' }}
         id: cache-openssl-installer
         uses: actions/cache@v4
         with:
-          path: build\openssl-installer-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}.exe
-          key: openssl-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}
+          path: build\openssl-installer-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}-${{ matrix.ARCH }}.exe
+          key: openssl-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}-${{ matrix.ARCH }}
       
       - name: Instal dependency (OpenSSL)
+        if: ${{ matrix.COMPILER == 'vs' }}
         shell: pwsh
         # On Windows, building OpenSSL from source code is quite slow (20m ~ 30m).
         # In order to get pre-built binaries (CI purposes) for the OpenSSL library
-        # ABI-compatible with MSVC and GCC, a faster approach can be achieved
+        # ABI-compatible with MSVC, a faster approach can be achieved
         # by downloading the binaries from a known third-party.
 
         # slproweb ( https://slproweb.com/products/Win32OpenSSL.html ) is a long
@@ -260,18 +247,19 @@ jobs:
         # https://github.com/actions/runner-images/blob/a88fc4db06ae2350cb3128627b7fe4b5ee847f8e/images/windows/scripts/build/Install-OpenSSL.ps1
         # to install OpenSSL from slproweb.
 
-        # Note 1: AppVeyor pre-built binaries for OpenSSL
+        # Note: AppVeyor pre-built binaries for OpenSSL
         #         come from this provider.
-
-        # Note 2: Only 32 bits binaries ($bits = '32' below)
-        #         ships with MinGW import libraries
         run: |
-          $installerName = "${{ github.workspace }}\build\openssl-installer-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}.exe";
+          $installerName = "${{ github.workspace }}\build\openssl-installer-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}-${{ matrix.ARCH }}.exe";
 
           if ("${{ steps.cache-openssl-installer.outputs.cache-hit }}" -ne "true")
           {
             $arch = 'INTEL';
-            $bits = '32';
+            
+            if ("${{ matrix.ARCH }}" -eq "x86") { $bits = '32'; }
+            elseif ("${{ matrix.ARCH }}" -eq "x64") { $bits = '64'; }
+            else { $bits = '-1'; }
+
             $light = $false;
             $version = "${{ env.LUAROCKS_DEPS_OPENSSL_VER }}";
 
@@ -316,21 +304,32 @@ jobs:
             -FilePath "${installerName}" `
             -ArgumentList "/verysilent", "/sp-", "/suppressmsgboxes", "/DIR=`"${{ env.LUAROCKS_DEPS_DIR }}`"" `
             -Wait;
-
-          # Copy all the MinGW import libraries (*.a)
-          # from "${{ env.LUAROCKS_DEPS_DIR }}\lib\MinGW" to "${{ env.LUAROCKS_DEPS_DIR }}\lib"
-          $deps_lib_dir = Join-Path -Path "${{ env.LUAROCKS_DEPS_DIR }}" -ChildPath "lib";
-          $mingw_implib_dir = Join-Path -Path "${deps_lib_dir}" -ChildPath "MinGW";
           
-          if (Test-Path -Path $mingw_implib_dir)
+          $deps_lib_dir = Join-Path -Path "${{ env.LUAROCKS_DEPS_DIR }}" -ChildPath "lib";
+          if (Test-Path -Path $deps_lib_dir)
           {
-            Get-ChildItem -Path $mingw_implib_dir -Recurse -File |
-              Where-Object Extension -EQ ".a" |
-              ForEach-Object {
-                Copy-Item -Path ($_.FullName) -Destination $deps_lib_dir;
+            foreach ($imp_lib in "libssl.lib", "libcrypto.lib")
+            {
+              $current_imp_lib = Join-Path -Path "${deps_lib_dir}" -ChildPath "${imp_lib}";
+              if (-not (Test-Path -Path $current_imp_lib))
+              {
+                $current_imp_lib = Get-ChildItem -Path $deps_lib_dir -Recurse -File |
+                  Where-Object Name -EQ "${imp_lib}" |
+                  Select-Object -ExpandProperty FullName -First 1;
+                
+                Copy-Item -Path $current_imp_lib -Destination $deps_lib_dir;
               }
+            }
           }
-
+      
+      - name: Setup mingw-w64 and dependencies (UCRT64)
+        if: ${{ matrix.COMPILER == 'mingw' }}
+        run: |
+          C:\msys64\usr\bin\bash "-lc" ^
+            "pacman -S mingw-w64-ucrt-x86_64-cc mingw-w64-ucrt-x86_64-make mingw-w64-ucrt-x86_64-zlib mingw-w64-ucrt-x86_64-bzip2 mingw-w64-ucrt-x86_64-openssl --noconfirm"
+          
+          echo C:\msys64\ucrt64\bin>>${{ github.path }}
+  
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -344,15 +343,15 @@ jobs:
           FOR /F "tokens=* USEBACKQ" %%F IN (`python -c "import certifi;print(certifi.where())"`) DO (
             echo SSL_CERT_FILE=%%F>>${{ github.env }}
           )
-
+      
       - name: Install ${{ matrix.LUAT }} ${{ matrix.LUAV }}
         run: |
-          SET "CURRENT_LUA_DIR=${{ github.workspace }}\lua_install-${{ matrix.LUAV }}"
+          SET "CURRENT_LUA_DIRNAME=lua_install-${{ matrix.LUAV }}"
+          SET "CURRENT_LUA_DIR=${{ github.workspace }}\%CURRENT_LUA_DIRNAME%"
           
-          pip install hererocks
-
+          pip install hererocks && ^
           hererocks ^
-            "%CURRENT_LUA_DIR%" ^
+            "%CURRENT_LUA_DIRNAME%" ^
             "--${{ matrix.LUAT }}" ^
             "${{ matrix.LUAV }}" ^
             "--luarocks" "latest" ^
@@ -365,7 +364,7 @@ jobs:
           echo CURRENT_LUA_BIN=%CURRENT_LUA_BIN%>>${{ github.env }}
           echo BUSTED_BAT=%CURRENT_LUA_BIN%\busted.bat>>${{ github.env }}
           echo LUACOV_BAT=%CURRENT_LUA_BIN%\luacov.bat>>${{ github.env }}
-      
+
       - name: Install compat53
         run: luarocks install compat53
         
@@ -380,39 +379,21 @@ jobs:
       
       - name: Run test
         run: |
-          IF "x${{ matrix.FILES }}"=="x" (
-            busted ^
-              "-o" "htest" ^
-              "-v" "--lpath=.//?.lua" ^
-              "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
-              "-Xhelper" ^
-              "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }}"
-          ) ELSE (
-            busted ^
-              "-o" "htest" ^
-              "-v" "--lpath=.//?.lua" ^
-              "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
-              "-Xhelper" ^
-              "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }}" ^
-              "${{ matrix.FILES }}"
-          )
+          busted ^
+            "-o" "htest" ^
+            "-v" "--lpath=.//?.lua" ^
+            "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
+            "-Xhelper" ^
+            "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }}" ^
+            ${{ matrix.FILES }}
       
       - name: Run unit test
         if: ${{ matrix.TESTTYPE == 'unit' }}
         run: |
-          IF "x${{ matrix.FILES }}"=="x" (
-            busted ^
-              "-o" "htest" ^
-              "-v" "--lpath=.//?.lua" ^
-              "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
-              "-Xhelper" ^
-              "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }},env=full"
-          ) ELSE (
-            busted ^
-              "-o" "htest" ^
-              "-v" "--lpath=.//?.lua" ^
-              "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
-              "-Xhelper" ^
-              "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }},env=full" ^
-              "${{ matrix.FILES }}"
-          )
+          busted ^
+            "-o" "htest" ^
+            "-v" "--lpath=.//?.lua" ^
+            "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
+            "-Xhelper" ^
+            "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }},env=full" ^
+            ${{ matrix.FILES }}
