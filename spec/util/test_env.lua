@@ -382,6 +382,14 @@ function test_env.set_args()
             if test_env.MINGW then
                test_env.OPENSSL_LIBDIR = "C:\\OpenSSL-v111-Win32\\bin"
             end
+         elseif test_env.CI_WINDOWS then
+            if test_env.MINGW then
+               test_env.OPENSSL_INCDIR = "c:\\msys64\\ucrt64\\include"
+               test_env.OPENSSL_LIBDIR = "c:\\msys64\\ucrt64\\lib"
+            else
+               test_env.OPENSSL_INCDIR = "c:\\external\\include"
+               test_env.OPENSSL_LIBDIR = "c:\\external\\lib"
+            end
          end
       else
          local system = execute_output("uname -s")
