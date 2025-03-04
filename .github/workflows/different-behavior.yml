@@ -1,0 +1,70 @@
+name: Different behavior
+
+on:
+  push:
+
+jobs:
+  exec:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: cmd
+
+    strategy:
+      fail-fast: false
+      matrix:
+        toolchain:
+          - vs
+          - mingw
+      
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          path: luarocks-checkout
+      
+      - name: Setup Python
+        uses: actions/setup-python@v5
+      
+      - name: Checkout hererocks
+        uses: actions/checkout@v4
+        with:
+          repository: luarocks/hererocks
+          path: hererocks
+      
+      - name: Setup MSVC
+        if: ${{ matrix.toolchain == 'vs' }}
+        uses: ilammy/msvc-dev-cmd@v1
+      
+      - name: Install Lua
+        run: |
+          python hererocks\hererocks.py ${{ runner.temp }}\lua --lua 5.4 --luarocks latest --target=${{ matrix.toolchain }}
+      
+      - name: Add Lua to PATH
+        run: echo ${{ runner.temp }}\lua\bin>>${{ github.path }}
+      
+      - name: Configure LuaRocks
+        run: |
+          rmdir /S /Q ${{ runner.temp }}\lua\luarocks
+          del ${{ runner.temp }}\lua\bin\luarocks*
+          rmdir /S /Q %APPDATA%\luarocks
+          cd luarocks-checkout
+          set "LR_PATH=${{ runner.temp }}\_lr"
+          IF "${{ matrix.toolchain }}"=="vs" ( SET TGT=MSVC ) ELSE ( SET TGT=MW )
+          CALL install.bat ^
+            /P %LR_PATH% ^
+            /CONFIG %LR_PATH%\luarocks-conf ^
+            /LUA ${{ runner.temp }}\lua ^
+            /%TGT% /Q /NOREG
+
+          echo LR_PATH=%LR_PATH%>>${{ github.env }}
+
+      # - name: Add LuaRocks to PATH
+      #   run: echo ${{ runner.temp }}\_lr>>${{ github.path }}
+
+      - name: Install modules
+        run: ${{ env.LR_PATH }}\luarocks.bat install penlight
+      
+      - name: Require pl.path
+        run: lua -e "assert(require('pl.path'))"
