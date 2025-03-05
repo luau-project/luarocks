@@ -25,73 +25,19 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # x86
-          
+          #
+          # Visual Studio x64
+          #
+
           # quick tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,unit"
-          #   TESTTYPE: ""
-          #   ARCH: x86
-          # Lua 5.4 tests
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          #   ARCH: x86
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x86
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "mingw"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "integration,unit"
             TESTTYPE: ""
-            ARCH: x86
-          # LuaJIT 2.1 tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          #   ARCH: x86
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x86
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "mingw"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          #   ARCH: x86
-
-
-          # x64
-          
-          # # quick tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,unit"
-          #   TESTTYPE: ""
-          #   ARCH: x64
-          # # Lua 5.4 tests
+            ARCH: x64
+          # Lua 5.4 tests
           - LUAV: "5.4"
             LUAT: "lua"
             COMPILER: "vs"
@@ -99,42 +45,94 @@ jobs:
             EXCLUDE: "integration,quick"
             TESTTYPE: "unit"
             ARCH: x64
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x64
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          #   ARCH: x64
-          # # LuaJIT 2.1 tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          #   ARCH: x64
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x64
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          #   ARCH: x64
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+            ARCH: x64
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "vs"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+            ARCH: x64
+          # LuaJIT 2.1 tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+            ARCH: x64
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+            ARCH: x64
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+            ARCH: x64
+
+          #
+          # MinGW-w64 with Universal C Run Time
+          # provided by MSYS2
+          #
+          
+          # quick tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "integration,unit"
+            TESTTYPE: ""
+          # Lua 5.4 tests
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "mingw"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+          # LuaJIT 2.1 tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -146,9 +144,8 @@ jobs:
           arch: ${{ matrix.ARCH }}
 
       - name: Add bin directory of dependencies to system PATH environment variable
-        if: ${{ matrix.COMPILER == 'vs' }}
         run: echo ${{ env.LUAROCKS_DEPS_DIR }}\bin>>${{ github.path }}
-                  
+        
       - name: Cache zlib tarball
         if: ${{ matrix.COMPILER == 'vs' }}
         id: cache-zlib-tarball
@@ -325,11 +322,17 @@ jobs:
       - name: Setup mingw-w64 and dependencies (UCRT64)
         if: ${{ matrix.COMPILER == 'mingw' }}
         run: |
+          SET PKGS_TO_INSTALL=mingw-w64-ucrt-x86_64-cc ^
+            mingw-w64-ucrt-x86_64-make ^
+            mingw-w64-ucrt-x86_64-zlib ^
+            mingw-w64-ucrt-x86_64-bzip2 ^
+            mingw-w64-ucrt-x86_64-openssl
+
           C:\msys64\usr\bin\bash "-lc" ^
-            "pacman -S mingw-w64-ucrt-x86_64-cc mingw-w64-ucrt-x86_64-make mingw-w64-ucrt-x86_64-zlib mingw-w64-ucrt-x86_64-bzip2 mingw-w64-ucrt-x86_64-openssl --noconfirm"
+            "pacman -S %PKGS_TO_INSTALL% --noconfirm"
           
           echo C:\msys64\ucrt64\bin>>${{ github.path }}
-  
+      
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
@@ -344,26 +347,75 @@ jobs:
             echo SSL_CERT_FILE=%%F>>${{ github.env }}
           )
       
+      - name: Checkout a pinned version of LuaRocks
+        uses: actions/checkout@v4
+        with:
+          ref: 6e4e43356d5bfac748b4457f9dad4b0757fee85b
+          path: build/pinned-luarocks
+      
       - name: Install ${{ matrix.LUAT }} ${{ matrix.LUAV }}
         run: |
           SET "CURRENT_LUA_DIRNAME=lua_install-${{ matrix.LUAV }}"
           SET "CURRENT_LUA_DIR=${{ github.workspace }}\%CURRENT_LUA_DIRNAME%"
-          
+          SET "CURRENT_LUA_BIN=%CURRENT_LUA_DIR%\bin"
+          SET "CURRENT_LUA_INTERPRETER=%CURRENT_LUA_BIN%\lua.exe"
+          SET "LR_PREFIX=${{ runner.temp }}\luarocks"
+          SET "LR_CONFIG=%LR_PREFIX%\conf"
+
           pip install hererocks && ^
           hererocks ^
             "%CURRENT_LUA_DIRNAME%" ^
             "--${{ matrix.LUAT }}" ^
             "${{ matrix.LUAV }}" ^
             "--luarocks" "latest" ^
-            "--target=${{ matrix.COMPILER }}"
+            "--target=${{ matrix.COMPILER }}" && ^
+          rmdir /S /Q %CURRENT_LUA_DIR%\luarocks && ^
+          rmdir /S /Q %APPDATA%\luarocks && ^
+          del /Q %CURRENT_LUA_BIN%\luarocks*
           
-          SET "CURRENT_LUA_BIN=%CURRENT_LUA_DIR%\bin"
+          IF "${{ matrix.COMPILER }}"=="vs" (
+            SET TGT=MSVC
+          ) ELSE (
+            SET TGT=MW
+          )
+
+          cd build\pinned-luarocks && ^
+          call "install.bat" ^
+            "/P" "%LR_PREFIX%" ^
+            "/CONFIG" "%LR_CONFIG%" ^
+            "/LUA" "%CURRENT_LUA_DIR%" ^
+            "/%TGT%" ^
+            "/Q" "/NOREG"
+
+          IF NOT "%ERRORLEVEL%"=="0" EXIT /B 1
 
           echo %CURRENT_LUA_BIN%>>${{ github.path }}
+          echo %LR_PREFIX%>>${{ github.path }}
           echo CURRENT_LUA_DIR=%CURRENT_LUA_DIR%>>${{ github.env }}
           echo CURRENT_LUA_BIN=%CURRENT_LUA_BIN%>>${{ github.env }}
-          echo BUSTED_BAT=%CURRENT_LUA_BIN%\busted.bat>>${{ github.env }}
-          echo LUACOV_BAT=%CURRENT_LUA_BIN%\luacov.bat>>${{ github.env }}
+          echo CURRENT_LUA_INTERPRETER=%CURRENT_LUA_INTERPRETER%>>${{ github.env }}
+          echo BUSTED_BAT=%LR_PREFIX%\busted.bat>>${{ github.env }}
+          echo LUACOV_BAT=%LR_PREFIX%\luacov.bat>>${{ github.env }}
+
+      - name: Configure MSVCRT to build dependencies
+        if: ${{ matrix.COMPILER == 'mingw' }}
+        run: |
+          SET MSVCRT_LUA_CODE=local pe = require [[win32.pe-parser]]; ^
+            local rt, _ = pe.msvcrt [[${{ env.CURRENT_LUA_INTERPRETER }}]]; ^
+            print(rt or 'nil')
+          
+          FOR /F "tokens=* USEBACKQ" %%I IN (`lua -e "%MSVCRT_LUA_CODE%"`) DO (
+            IF NOT "%%I"=="nil" (
+              luarocks config variables.MSVCRT "%%I"
+            )
+          )
+      
+      - name: Cache rocks
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/*.src.rock
+          key: rocks
 
       - name: Install compat53
         run: luarocks install compat53
