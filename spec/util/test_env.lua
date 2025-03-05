@@ -386,6 +386,12 @@ function test_env.set_args()
             if test_env.MINGW then
                test_env.OPENSSL_INCDIR = "c:\\msys64\\ucrt64\\include"
                test_env.OPENSSL_LIBDIR = "c:\\msys64\\ucrt64\\lib"
+
+               test_env.ZLIB_INCDIR = test_env.OPENSSL_INCDIR
+               test_env.ZLIB_LIBDIR = test_env.OPENSSL_LIBDIR
+
+               test_env.BZ2_INCDIR = test_env.OPENSSL_INCDIR
+               test_env.BZ2_LIBDIR = test_env.OPENSSL_LIBDIR
             else
                test_env.OPENSSL_INCDIR = "c:\\external\\include"
                test_env.OPENSSL_LIBDIR = "c:\\external\\lib"
@@ -680,7 +686,11 @@ local function build_environment(rocks, env_variables)
    lfs.mkdir(testing_paths.testing_deps_tree)
 
    test_env.run.luarocks_admin_nocov(C("make_manifest", Q(testing_paths.testing_server)))
-   test_env.run.luarocks_admin_nocov(C("make_manifest", Q(testing_paths.testing_cache)))
+   test_env.run.luarocks_admin_nocov(C("make_manifest", Q(testing_paths.testing_cache)))   
+   
+   if test_env.MSVCRT then
+      test_env.run.luarocks_nocov(C("config", "variables.MSVCRT", Q(test_env.MSVCRT), "--tree=" .. testing_paths.testing_cache))
+   end
 
    for _, rock in ipairs(rocks) do
       local only_server = "--only-server=" .. testing_paths.testing_cache
@@ -791,6 +801,22 @@ function test_env.unload_luarocks()
    if not package.path:find(src_pattern, 1, true) then
       package.path = src_pattern .. ";" .. package.path
    end
+end
+
+local function get_MSVCRT(variables)
+   if not (test_env.CI_WINDOWS and test_env.MINGW) then return nil end
+   local pe_parser_path = dir_path(test_env.testing_paths.src_dir, '..', 'win32', 'pe-parser.lua')
+   local print_arch_script = "\"" ..
+                             "local pe = assert(loadfile([[" .. pe_parser_path .. "]]))()" ..
+                             "local rt, _ = pe.msvcrt([[" .. test_env.testing_paths.lua .. "]])" ..
+                             "print(rt or 'nil')" ..
+                             "\""
+   local cmd = C(test_env.testing_paths.lua, "-e", print_arch_script)
+   local output = execute_output(cmd, false, variables)
+   if output == 'nil' then
+      output = nil
+   end
+   return output
 end
 
 local function get_luarocks_platform(variables)
@@ -1051,6 +1077,7 @@ local function prepare_mock_server_binary_rocks()
       "restserver-xavante-0.2-1.src.rock",
    }
    local make_manifest = download_rocks(rocks, testing_paths.testing_server)
+
    for _, rock in ipairs(rocks) do
       rock = V(rock)
       local rockname = rock:gsub("%-[^-]+%-%d+%.[%a.]+$", "")
@@ -1117,6 +1144,12 @@ function test_env.main()
       end
       assert(test_env.run.luarocks_nocov(C("config", "variables.OPENSSL_INCDIR", Q(test_env.OPENSSL_INCDIR)), env_vars))
       assert(test_env.run.luarocks_nocov(C("config", "variables.OPENSSL_LIBDIR", Q(test_env.OPENSSL_LIBDIR)), env_vars))
+      if test_env.CI_WINDOWS and test_env.MINGW then
+         assert(test_env.run.luarocks_nocov(C("config", "variables.ZLIB_INCDIR", Q(test_env.ZLIB_INCDIR)), env_vars))
+         assert(test_env.run.luarocks_nocov(C("config", "variables.ZLIB_LIBDIR", Q(test_env.ZLIB_LIBDIR)), env_vars))
+         assert(test_env.run.luarocks_nocov(C("config", "variables.BZ2_INCDIR", Q(test_env.BZ2_INCDIR)), env_vars))
+         assert(test_env.run.luarocks_nocov(C("config", "variables.BZ2_LIBDIR", Q(test_env.BZ2_LIBDIR)), env_vars))
+      end
    end
 
    -- luacov is needed for both minimal or full environment
@@ -1163,6 +1196,7 @@ function test_env.setup_specs(extra_rocks, use_mock)
       package.path = variables.LUA_PATH
       package.cpath = variables.LUA_CPATH
 
+      test_env.MSVCRT = get_MSVCRT(test_env.env_variables)
       test_env.platform = get_luarocks_platform(test_env.env_variables)
       test_env.wrapper_extension = test_env.TEST_TARGET_OS == "windows" and ".bat" or ""
       test_env.setup_done = true
@@ -1197,6 +1231,7 @@ test_env.exists = exists
 test_env.V = V
 test_env.Q = Q
 test_env.P = P
+test_env.MSVCRT = get_MSVCRT(test_env.env_variables)
 test_env.platform = get_luarocks_platform(test_env.env_variables)
 
 return test_env
