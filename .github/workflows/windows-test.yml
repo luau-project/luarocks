@@ -2,11 +2,11 @@ name: Windows test
 
 on:
   push:
-  #   branches: master
-  # pull_request:
-  #   branches: '*'
-  # workflow_dispatch:
-  #   branches: '*'
+    branches: master
+  pull_request:
+    branches: '*'
+  workflow_dispatch:
+    branches: '*'
 
 env:
   LUAROCKS_DEPS_DIR: c:\external
@@ -86,7 +86,7 @@ jobs:
           # MinGW-w64 with Universal C Run Time
           # provided by MSYS2
           #
-          
+
           # quick tests
           - LUAV: "2.1"
             LUAT: "luajit"
