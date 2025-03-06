@@ -2,11 +2,11 @@ name: Windows test
 
 on:
   push:
-    branches: master
-  pull_request:
-    branches: '*'
-  workflow_dispatch:
-    branches: '*'
+  #   branches: master
+  # pull_request:
+  #   branches: '*'
+  # workflow_dispatch:
+  #   branches: '*'
 
 env:
   LUAROCKS_DEPS_DIR: c:\external
@@ -16,7 +16,7 @@ env:
 
 jobs:
   ##############################################################################
-  build:
+  ci-windows-build-test:
     runs-on: "windows-latest"
     defaults:
       run:
@@ -36,6 +36,7 @@ jobs:
             FILES: ""
             EXCLUDE: "integration,unit"
             TESTTYPE: ""
+            TESTID: "001"
             ARCH: x64
           # Lua 5.4 tests
           - LUAV: "5.4"
@@ -44,94 +45,107 @@ jobs:
             FILES: ""
             EXCLUDE: "integration,quick"
             TESTTYPE: "unit"
+            TESTID: "002"
             ARCH: x64
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-            ARCH: x64
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
-            ARCH: x64
-          # LuaJIT 2.1 tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-            ARCH: x64
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-            ARCH: x64
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
-            ARCH: x64
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   TESTID: "003"
+          #   ARCH: x64
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "vs"
+          #   FILES: "spec//build_spec.lua"
+          #   EXCLUDE: ""
+          #   TESTTYPE: ""
+          #   TESTID: "004"
+          #   ARCH: x64
+          # # LuaJIT 2.1 tests
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "integration,quick"
+          #   TESTTYPE: "unit"
+          #   TESTID: "005"
+          #   ARCH: x64
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   TESTID: "006"
+          #   ARCH: x64
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "vs"
+          #   FILES: "spec//build_spec.lua"
+          #   EXCLUDE: ""
+          #   TESTTYPE: ""
+          #   TESTID: "007"
+          #   ARCH: x64
 
-          #
-          # MinGW-w64 with Universal C Run Time
-          # provided by MSYS2
-          #
+          # #
+          # # MinGW-w64 with Universal C Run Time
+          # # provided by MSYS2
+          # #
 
-          # quick tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "integration,unit"
-            TESTTYPE: ""
-          # Lua 5.4 tests
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "mingw"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
-          # LuaJIT 2.1 tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
+          # # quick tests
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "mingw"
+          #   FILES: ""
+          #   EXCLUDE: "integration,unit"
+          #   TESTTYPE: ""
+          #   TESTID: "008"
+          # # Lua 5.4 tests
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "mingw"
+          #   FILES: ""
+          #   EXCLUDE: "integration,quick"
+          #   TESTTYPE: "unit"
+          #   TESTID: "009"
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "mingw"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   TESTID: "010"
+          # - LUAV: "5.4"
+          #   LUAT: "lua"
+          #   COMPILER: "mingw"
+          #   FILES: "spec//build_spec.lua"
+          #   EXCLUDE: ""
+          #   TESTTYPE: ""
+          #   TESTID: "011"
+          # # LuaJIT 2.1 tests
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "mingw"
+          #   FILES: ""
+          #   EXCLUDE: "integration,quick"
+          #   TESTTYPE: "unit"
+          #   TESTID: "012"
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "mingw"
+          #   FILES: ""
+          #   EXCLUDE: "unit,quick"
+          #   TESTTYPE: ""
+          #   TESTID: "013"
+          # - LUAV: "2.1"
+          #   LUAT: "luajit"
+          #   COMPILER: "mingw"
+          #   FILES: "spec//build_spec.lua"
+          #   EXCLUDE: ""
+          #   TESTTYPE: ""
+          #   TESTID: "014"
 
     steps:
       - name: Checkout
@@ -449,3 +463,37 @@ jobs:
             "-Xhelper" ^
             "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }},env=full" ^
             ${{ matrix.FILES }}
+      
+      - name: Generate code coverage report
+        run: |
+          luacov "-c" "testrun/luacov.config" && ^
+          copy "testrun/luacov.report.out" "luacov.report-${{ matrix.TESTID }}.out"
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          retention-days: 1
+          name: luacov.report-${{ matrix.TESTID }}.out
+          path: luacov.report-${{ matrix.TESTID }}.out
+
+  ci-windows:
+    runs-on: windows-latest
+    needs: ci-windows-build-test
+    steps:
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+      
+      # - name: Upload code coverage
+      #   uses: codecov/codecov-action@v5
+      #   with:
+      #     disable_search: true
+      #     files: luacov.report-001.out,luacov.report-002.out,luacov.report-003.out,luacov.report-004.out,luacov.report-005.out,luacov.report-006.out,luacov.report-007.out,luacov.report-008.out,luacov.report-009.out,luacov.report-010.out,luacov.report-011.out,luacov.report-012.out,luacov.report-013.out,luacov.report-014.out
+      #     token: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: Upload code coverage
+        uses: codecov/codecov-action@v5
+        with:
+          disable_search: true
+          files: luacov.report-001.out,luacov.report-002.out
+          token: ${{ secrets.CODECOV_TOKEN }}
