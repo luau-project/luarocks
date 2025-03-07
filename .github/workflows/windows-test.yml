@@ -39,150 +39,150 @@ jobs:
             EXCLUDE: "integration,quick"
             TESTTYPE: "unit"
             ARCH: x64
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x64
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          #   ARCH: x64
-          # # LuaJIT 2.1 tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          #   ARCH: x64
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x64
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          #   ARCH: x64
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+            ARCH: x64
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "vs"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+            ARCH: x64
+          # LuaJIT 2.1 tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+            ARCH: x64
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+            ARCH: x64
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+            ARCH: x64
 
-          # #
-          # # Visual Studio x86
-          # #
+          #
+          # Visual Studio x86
+          #
 
-          # # quick tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,unit"
-          #   TESTTYPE: ""
-          #   ARCH: x86
-          # # Lua 5.4 tests
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          #   ARCH: x86
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x86
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "vs"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          #   ARCH: x86
-          # # LuaJIT 2.1 tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          #   ARCH: x86
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          #   ARCH: x86
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "vs"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          #   ARCH: x86
+          # quick tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "integration,unit"
+            TESTTYPE: ""
+            ARCH: x86
+          # Lua 5.4 tests
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+            ARCH: x86
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+            ARCH: x86
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "vs"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+            ARCH: x86
+          # LuaJIT 2.1 tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+            ARCH: x86
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+            ARCH: x86
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "vs"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+            ARCH: x86
           
-          # #
-          # # MinGW-w64 with Universal C Run Time
-          # # provided by MSYS2
-          # #
+          #
+          # MinGW-w64 with Universal C Run Time
+          # provided by MSYS2
+          #
 
-          # # quick tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "mingw"
-          #   FILES: ""
-          #   EXCLUDE: "integration,unit"
-          #   TESTTYPE: ""
-          # # Lua 5.4 tests
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "mingw"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "mingw"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          # - LUAV: "5.4"
-          #   LUAT: "lua"
-          #   COMPILER: "mingw"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
-          # # LuaJIT 2.1 tests
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "mingw"
-          #   FILES: ""
-          #   EXCLUDE: "integration,quick"
-          #   TESTTYPE: "unit"
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "mingw"
-          #   FILES: ""
-          #   EXCLUDE: "unit,quick"
-          #   TESTTYPE: ""
-          # - LUAV: "2.1"
-          #   LUAT: "luajit"
-          #   COMPILER: "mingw"
-          #   FILES: "spec//build_spec.lua"
-          #   EXCLUDE: ""
-          #   TESTTYPE: ""
+          # quick tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "integration,unit"
+            TESTTYPE: ""
+          # Lua 5.4 tests
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+          - LUAV: "5.4"
+            LUAT: "lua"
+            COMPILER: "mingw"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
+          # LuaJIT 2.1 tests
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "integration,quick"
+            TESTTYPE: "unit"
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: ""
+            EXCLUDE: "unit,quick"
+            TESTTYPE: ""
+          - LUAV: "2.1"
+            LUAT: "luajit"
+            COMPILER: "mingw"
+            FILES: "spec//build_spec.lua"
+            EXCLUDE: ""
+            TESTTYPE: ""
 
     env:
       # The following env variables
