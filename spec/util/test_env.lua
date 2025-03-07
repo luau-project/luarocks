@@ -803,13 +803,16 @@ function test_env.unload_luarocks()
    end
 end
 
+--- Gets the C Run Time of the Lua interpreter built by mingw-w64 on ci-windows.
+-- Returns the MSVCRT on success
+-- Returns nil on failure
 local function get_MSVCRT(variables)
    if not (test_env.CI_WINDOWS and test_env.MINGW) then return nil end
    local pe_parser_path = dir_path(test_env.testing_paths.src_dir, '..', 'win32', 'pe-parser.lua')
    local print_arch_script = "\"" ..
-                             "local pe = assert(loadfile([[" .. pe_parser_path .. "]]))()" ..
-                             "local rt, _ = pe.msvcrt([[" .. test_env.testing_paths.lua .. "]])" ..
-                             "print(rt or 'nil')" ..
+                             "local pe = assert(loadfile([[" .. pe_parser_path .. "]]))();" ..
+                             "local rt, _ = pe.msvcrt([[" .. test_env.testing_paths.lua .. "]]);" ..
+                             "print(rt or 'nil');" ..
                              "\""
    local cmd = C(test_env.testing_paths.lua, "-e", print_arch_script)
    local output = execute_output(cmd, false, variables)
