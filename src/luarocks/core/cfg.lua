@@ -74,7 +74,7 @@ local function detect_sysconfdir()
       end
       return dir.path(installdir, "etc", "luarocks")
    end
-   -- Otherwise, use base directory of sources
+   -- Otherwise, use base directory of sources 
    return basedir
 end
 
