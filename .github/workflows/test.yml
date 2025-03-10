@@ -132,114 +132,30 @@ jobs:
           # Visual Studio x64
           #
 
-          # quick tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,unit"
-            TESTTYPE: ""
-            ARCH: x64
-          # Lua 5.4 tests
+          # PUC-Rio
           - LUAV: "5.4"
             LUAT: "lua"
             COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
             ARCH: x64
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-            ARCH: x64
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
-            ARCH: x64
-          # LuaJIT 2.1 tests
+          # LuaJIT
           - LUAV: "2.1"
             LUAT: "luajit"
             COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-            ARCH: x64
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-            ARCH: x64
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
             ARCH: x64
 
           #
           # Visual Studio x86
           #
 
-          # quick tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,unit"
-            TESTTYPE: ""
-            ARCH: x86
-          # Lua 5.4 tests
+          # PUC-Rio
           - LUAV: "5.4"
             LUAT: "lua"
             COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
             ARCH: x86
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-            ARCH: x86
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "vs"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
-            ARCH: x86
-          # LuaJIT 2.1 tests
+          # LuaJIT
           - LUAV: "2.1"
             LUAT: "luajit"
             COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-            ARCH: x86
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-            ARCH: x86
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "vs"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
             ARCH: x86
 
           #
@@ -247,51 +163,15 @@ jobs:
           # provided by MSYS2
           #
 
-          # quick tests
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "integration,unit"
-            TESTTYPE: ""
-          # Lua 5.4 tests
+          # PUC-Rio
           - LUAV: "5.4"
             LUAT: "lua"
             COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-          - LUAV: "5.4"
-            LUAT: "lua"
-            COMPILER: "mingw"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
-          # LuaJIT 2.1 tests
+          # LuaJIT
           - LUAV: "2.1"
             LUAT: "luajit"
             COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "integration,quick"
-            TESTTYPE: "unit"
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: ""
-            EXCLUDE: "unit,quick"
-            TESTTYPE: ""
-          - LUAV: "2.1"
-            LUAT: "luajit"
-            COMPILER: "mingw"
-            FILES: "spec//build_spec.lua"
-            EXCLUDE: ""
-            TESTTYPE: ""
+
     env:
       # The following env variables
       # only applies to Visual Studio
@@ -633,26 +513,61 @@ jobs:
       - name: Install busted-htest
         run: luarocks install busted-htest
 
-      - name: Run test
+      - name: Run quick test (minimal)
         run: |
           busted ^
             -o htest ^
             -v "--lpath=.//?.lua" ^
-            "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
+            "--exclude-tags=ssh,unix,integration,unit" ^
+            -Xhelper ^
+            "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }}"
+
+      - name: Run quick test (full)
+        run: |
+          busted ^
+            -o htest ^
+            -v "--lpath=.//?.lua" ^
+            "--exclude-tags=ssh,unix,integration,unit" ^
+            -Xhelper ^
+            "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }},env=full"
+
+      - name: Run integration test (minimal)
+        run: |
+          busted ^
+            -o htest ^
+            -v "--lpath=.//?.lua" ^
+            "--exclude-tags=ssh,unix,unit,quick" ^
+            -Xhelper ^
+            "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }}"
+
+      - name: Run integration test (full)
+        run: |
+          busted ^
+            -o htest ^
+            -v "--lpath=.//?.lua" ^
+            "--exclude-tags=ssh,unix,unit,quick" ^
+            -Xhelper ^
+            "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }},env=full"
+
+      - name: Run build spec test (minimal)
+        run: |
+          busted ^
+            -o htest ^
+            -v "--lpath=.//?.lua" ^
+            "--exclude-tags=ssh,unix," ^
             -Xhelper ^
             "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }}" ^
-            ${{ matrix.FILES }}
+            "spec//build_spec.lua"
 
-      - name: Run unit test
-        if: ${{ matrix.TESTTYPE == 'unit' }}
+      - name: Run build spec test (full)
         run: |
           busted ^
             -o htest ^
             -v "--lpath=.//?.lua" ^
-            "--exclude-tags=ssh,unix,${{ matrix.EXCLUDE }}" ^
+            "--exclude-tags=ssh,unix," ^
             -Xhelper ^
             "lua_dir=${{ env.CURRENT_LUA_DIR }},${{ env.LUAROCKS_WINDOWS_GH_CI }},${{ matrix.COMPILER }},env=full" ^
-            ${{ matrix.FILES }}
+            "spec//build_spec.lua"
 
       - name: Generate coverage report
         working-directory: testrun
