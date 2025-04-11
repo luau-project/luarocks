@@ -1,0 +1,110 @@
+name: Cygwin Issue Reproduction
+
+on: [push, pull_request]
+
+jobs:
+  cygwin-issue:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: cmd
+
+    strategy:
+      fail-fast: false
+      matrix:
+        use-patch: ['yes', 'no']
+
+    env:
+      CYGWIN_NOWINPATH: 1
+      CHERE_INVOKING: 1
+      CYGWIN_INSTALL_DIR: C:\cygwin64
+
+    steps:
+      - name: Override git autocrlf to input before checkout
+        run: git config --global core.autocrlf input
+
+      - name: Checkout (from luarocks main)
+        if: ${{ matrix.use-patch == 'no' }}
+        uses: actions/checkout@v4
+        with:
+          path: luarocks
+          repository: luarocks/luarocks
+          ref: main
+
+      - name: Checkout (from patch)
+        if: ${{ matrix.use-patch == 'yes' }}
+        uses: actions/checkout@v4
+        with:
+          path: luarocks
+          repository: luau-project/luarocks
+          ref: fix-cygwin
+
+      - name: Setup Cygwin
+        uses: cygwin/cygwin-install-action@v5
+        with:
+          platform: x86_64
+          install-dir: ${{ env.CYGWIN_INSTALL_DIR }}
+          packages: |
+            coreutils,
+            wget,
+            gcc-g++,
+            make,
+            lua,
+            liblua-devel,
+            unzip
+
+      - name: Check that Cygwin tools (bash and cygpath) were installed, and set environment variables to hold their paths
+        run: |
+          SET CYGWIN_BASH=${{ env.CYGWIN_INSTALL_DIR }}\bin\bash.exe
+
+          IF EXIST "%CYGWIN_BASH%" (
+           ECHO CYGWIN_BASH=%CYGWIN_BASH%>>${{ github.env }}
+          ) ELSE (
+           ECHO bash from Cygwin was not found
+           EXIT /B 1
+          )
+
+          SET CYGWIN_CYGPATH=${{ env.CYGWIN_INSTALL_DIR }}\bin\cygpath.exe
+
+          IF EXIST "%CYGWIN_CYGPATH%" (
+           ECHO CYGWIN_CYGPATH=%CYGWIN_CYGPATH%>>${{ github.env }}
+          ) ELSE (
+           ECHO cygpath from Cygwin was not found
+           EXIT /B 1
+          )
+
+      - name: Configure, build and install LuaRocks
+        run: |
+          FOR /F "usebackq tokens=*" %%I IN (`${{ env.CYGWIN_CYGPATH }} -u "${{ github.workspace }}\luarocks"`) DO (
+            "${{ env.CYGWIN_BASH }}" -lc "cd \"%%I\" && ./configure --prefix=/usr && make \"SHEBANG=#!/usr/bin/env lua\" && make install";
+            "${{ env.CYGWIN_BASH }}" -lc "echo 'eval $(luarocks path)' > /etc/profile.d/luarocks.sh";
+          )
+
+      - name: Install LuaFileSystem
+        run: |
+          "${{ env.CYGWIN_BASH }}" -lc "luarocks install luafilesystem"
+
+      - name: Test LuaFileSystem
+        run: |
+          SET LFS_SCRIPT=local lfs = require'lfs' ^
+          function attrdir (path) ^
+              for file in lfs.dir(path) do ^
+                  if file ~= '.' and file ~= '..' then ^
+                      local f = path..'/'..file ^
+                      print ('\t '..f) ^
+                      local attr = lfs.attributes (f) ^
+                      assert (type(attr) == 'table') ^
+                      if attr.mode == 'directory' then ^
+                          attrdir (f) ^
+                      else ^
+                          for name, value in pairs(attr) do ^
+                              print (name, value) ^
+                          end ^
+                      end ^
+                  end ^
+              end ^
+          end ^
+          attrdir ('.')
+
+          "${{ env.CYGWIN_BASH }}" -lc "lua -e \"%LFS_SCRIPT%\""
