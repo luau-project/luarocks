@@ -1,0 +1,78 @@
+name: LFS Issues
+
+on: push
+
+jobs:
+  orig:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        lua-version:
+          - '5.1'
+          - 'luajit-2.1'
+        lfs-version:
+          - '1.5.0-3'
+          - '1.6.0-1'
+        os:
+          - 'ubuntu-latest'
+          - 'macos-latest'
+    steps:
+      - uses: luarocks/gh-actions-lua@master
+        with:
+          luaVersion: ${{ matrix.lua-version }}
+
+      - uses: luarocks/gh-actions-luarocks@master
+        with:
+          luaRocksVersion: "3.12.2"
+
+      - name: Install LuaFileSystem (${{ matrix.lfs-version }})
+        run: luarocks install luafilesystem ${{ matrix.lfs-version }}
+
+      - name: Install lua-cjson
+        run: luarocks install lua-cjson
+
+      - name: Remove lua-cjson
+        run: luarocks remove lua-cjson
+
+  PR:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        lua-version:
+          - '5.1'
+          - 'luajit-2.1'
+        lfs-version:
+          - '1.5.0-3'
+          - '1.6.0-1'
+        os:
+          - 'ubuntu-latest'
+          - 'macos-latest'
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout LuaRocks from PR
+        with:
+          ref: luarocks-fix-lfs
+
+      - uses: luarocks/gh-actions-lua@master
+        with:
+          luaVersion: ${{ matrix.lua-version }}
+
+      - name: Setup LuaRocks from the fork
+        run: |
+          ./configure "--prefix=${{ github.workspace }}/.luarocks" "--with-lua=${{ github.workspace }}/.lua"
+          make
+          make install
+          echo "LUA_PATH=$(${{ github.workspace }}/.luarocks/bin/luarocks path --lr-path)" >> ${{ github.env }}
+          echo "LUA_CPATH=$(${{ github.workspace }}/.luarocks/bin/luarocks path --lr-cpath)" >> ${{ github.env }}
+          echo "$(${{ github.workspace }}/.luarocks/bin/luarocks path --lr-bin)" >> ${{ github.path }}
+
+      - name: Install LuaFileSystem (${{ matrix.lfs-version }})
+        run: luarocks install luafilesystem ${{ matrix.lfs-version }}
+
+      - name: Install lua-cjson
+        run: luarocks install lua-cjson
+
+      - name: Remove lua-cjson
+        run: luarocks remove lua-cjson
