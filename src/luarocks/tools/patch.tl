@@ -41,6 +41,7 @@ local record patch
 end
 
 local fs = require("luarocks.fs")
+local fun = require("luarocks.fun")
 
 local type Lineends = patch.Lineends
 local type Hunk = patch.Hunk
@@ -279,7 +280,7 @@ function patch.read_patch(filename: string, data: string): Files, boolean
     local advance: boolean
     if state == 'filenames' then
       if startswith(line, "--- ") then
-        if files.source[nextfileno] then
+        if fun.contains(files.source, nextfileno as string) then
           all_ok = false
           warning(string.format("skipping invalid patch for %s",
                          files.source[nextfileno+1]))
@@ -302,7 +303,7 @@ function patch.read_patch(filename: string, data: string): Files, boolean
           table.insert(files.source, match)
         end
       elseif not startswith(line, "+++ ") then
-        if files.source[nextfileno] then
+        if fun.contains(files.source, nextfileno as string) then
           all_ok = false
           warning(string.format("skipping invalid patch with no target for %s",
                          files.source[nextfileno+1]))
@@ -313,7 +314,7 @@ function patch.read_patch(filename: string, data: string): Files, boolean
         end
         state = 'header'
       else
-        if files.target[nextfileno] then
+        if fun.contains(files.target, nextfileno as string) then
           all_ok = false
           warning(string.format("skipping invalid patch - double target at line %d",
                          lineno+1))
@@ -355,7 +356,7 @@ function patch.read_patch(filename: string, data: string): Files, boolean
     if not advance and state == 'hunkhead' then
       local m1, m2, m3, m4 = match_linerange(line)
       if not m1 then
-        if not files.hunks[nextfileno - 1] then
+        if not fun.contains(files.hunks, (nextfileno - 1) as {Hunk}) then
           all_ok = false
           warning(string.format("skipping invalid patch with no hunks for file %s",
                          files.target[nextfileno]))
