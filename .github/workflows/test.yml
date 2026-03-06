@@ -127,6 +127,51 @@ jobs:
         ./smoke_test.sh luarocks-dev.tar.gz binary
 
   ##############################################################################
+  WindowsBinaryBuild:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - package: gcc-mingw-w64-i686-posix
+            make-target: windows-binary-32
+            mingw-sysroot: /usr/i686-w64-mingw32
+
+          - package: gcc-mingw-w64-x86-64-posix
+            make-target: windows-binary-64
+            mingw-sysroot: /usr/x86_64-w64-mingw32
+
+    steps:
+    - uses: actions/checkout@main
+
+    # [!NOTE]:
+    #
+    # During tests, the exact same
+    # job (WindowsBinaryBuild)
+    # fails to build the cross compiler
+    # whenever we use Lua 5.4 provided
+    # by the packages `lua5.4 liblua5.4-dev`
+    # on Debian-based distros.
+    #
+    # On the other hand, installing Lua 5.4
+    # from source, as happens applying
+    # the `luarocks/gh-actions-lua@master`
+    # action below, everything runs as
+    # it should.
+    - uses: luarocks/gh-actions-lua@master
+      with:
+        luaVersion: 5.4
+
+    - name: Install cross compiler
+      run: sudo apt install ${{ matrix.package }}
+
+    - name: Configure LuaRocks to build the cross compiled binaries
+      run: ./configure "--with-lua=${{ github.workspace }}/.lua"
+
+    - name: Cross compile `luarocks.exe` and `luarocks-admin.exe` 
+      run: make "MINGW_SYSROOT=${{ matrix.mingw-sysroot }}" ${{ matrix.make-target }}
+
+  ##############################################################################
   WindowsTest:
     runs-on: "windows-latest"
     defaults:
