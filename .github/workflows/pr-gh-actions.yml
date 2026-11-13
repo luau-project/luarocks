@@ -9,7 +9,7 @@ on:
 jobs:
 
   SanitizeVersion:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     outputs:
       version: ${{ steps.version.outputs.version }}
@@ -33,7 +33,7 @@ jobs:
           fi
 
   CreatePullRequest:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
       - SanitizeVersion
     if: ${{ github.ref_type == 'tag' && needs.SanitizeVersion.outputs.version != 'none' }}

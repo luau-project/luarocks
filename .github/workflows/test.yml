@@ -18,7 +18,7 @@ on:
 jobs:
   ##############################################################################
   ShellLint:
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -38,7 +38,7 @@ jobs:
     strategy:
       matrix:
         lua-version: ["5.4", "luajit-2.1"]
-        os: ["ubuntu-latest", "macos-latest"]
+        os: ["ubuntu-24.04", "macos-latest"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -98,7 +98,7 @@ jobs:
 
   ##############################################################################
   SmokeTest:
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
@@ -116,7 +116,7 @@ jobs:
 
   ##############################################################################
   BinaryBuild:
-    runs-on: "ubuntu-latest"
+    runs-on: "ubuntu-24.04"
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       with:
@@ -137,7 +137,7 @@ jobs:
 
   ##############################################################################
   WindowsBinaryBuild:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix:
