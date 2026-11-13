@@ -15,6 +15,9 @@ on:
       - "**/*.md"
   workflow_dispatch:
 
+env:
+  LUAROCKS_DEPS_OPENSSL_VER: "3.6.5"
+
 jobs:
   ##############################################################################
   ShellLint:
@@ -125,6 +128,41 @@ jobs:
     - uses: luarocks/gh-actions-lua@56eba09993704b908cc3c7c2753e630d18cb9696 # v14
       with:
         luaVersion: "5.4"
+
+    - name: Cache OpenSSL tarball
+      id: restore-openssl-tarball
+      uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+      with:
+        path: openssl-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}.tar.gz
+        key: openssl-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}-${{ runner.os }}-${{ runner.arch }}
+
+    - name: Download OpenSSL
+      if: steps.restore-openssl-tarball.outputs.cache-hit != 'true'
+      run: curl -LO "https://www.openssl.org/source/openssl-${LUAROCKS_DEPS_OPENSSL_VER}.tar.gz"
+
+    - name: Extract OpenSSL tarball
+      run: tar -xf openssl-${LUAROCKS_DEPS_OPENSSL_VER}.tar.gz
+
+    - name: Set SSL_CERT_DIR environment variable for OpenSSL
+      run: echo "SSL_CERT_DIR=/etc/ssl/certs" >> ${GITHUB_ENV}
+
+    - name: Configure OpenSSL for a static build
+      working-directory: openssl-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}
+      run: ./Configure --prefix=/usr/local --libdir=lib no-shared no-apps no-tests
+
+    - name: Build OpenSSL
+      working-directory: openssl-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}
+      run: make
+
+    - name: Install OpenSSL
+      working-directory: openssl-${{ env.LUAROCKS_DEPS_OPENSSL_VER }}
+      run: sudo make install_sw
+
+    - name: Remove OpenSSL build dir
+      run: rm -rf ./openssl-${LUAROCKS_DEPS_OPENSSL_VER}
+
+    - name: Set OPENSSL_DIR environment variable for LuaRocks
+      run: echo "OPENSSL_DIR=/usr/local" >> ${GITHUB_ENV}
 
     - name: 'Setup Ubuntu deps'
       run: sudo apt-get install libbz2-dev
@@ -260,7 +298,6 @@ jobs:
       # The following env variables
       # only applies to Visual Studio
       LUAROCKS_DEPS_DIR: c:\external
-      LUAROCKS_DEPS_OPENSSL_VER: "3.6.5"
       LUAROCKS_DEPS_ZLIB_VER: "1.3.1"
       # The following env variable
       # applies to both Visual Studio and MinGW-w64
